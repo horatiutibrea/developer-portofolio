@@ -1,6 +1,7 @@
 using Portfolio.Api.Configuration;
 using Portfolio.Api.Services.Authentication;
 using Portfolio.Api.Services.Roles;
+using Portfolio.Api.Services.Portfolio;
 using Portfolio.Api.Services.Users;
 
 namespace Portfolio.Api.Extensions
@@ -24,6 +25,7 @@ namespace Portfolio.Api.Extensions
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRolesService, RolesService>();
+            services.AddScoped<PortfolioContentService>();
 
             return services;
         }

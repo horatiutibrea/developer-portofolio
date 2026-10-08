@@ -1,4 +1,5 @@
 using Portfolio.Api.Data;
+using Portfolio.Api.Services.Portfolio;
 using Portfolio.Api.Extensions;
 using Portfolio.Api.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -276,15 +277,19 @@ app.UseAuthorization();
 using (var migrationScope = app.Services.CreateScope())
 {
     var dataContext = migrationScope.ServiceProvider.GetRequiredService<DataContext>();
-    if (configuration.GetValue("Database:FailOnPendingMigrations", true)
-        && dataContext.Database.IsRelational())
+    if (dataContext.Database.IsRelational())
     {
-        var pendingMigrations = await dataContext.Database.GetPendingMigrationsAsync();
-        if (pendingMigrations.Any())
+        if (configuration.GetValue("Database:FailOnPendingMigrations", true))
         {
-            throw new InvalidOperationException(
-                $"Pending database migrations: {string.Join(", ", pendingMigrations)}. Run 'dotnet ef database update'.");
+            var pendingMigrations = await dataContext.Database.GetPendingMigrationsAsync();
+            if (pendingMigrations.Any())
+            {
+                throw new InvalidOperationException(
+                    $"Pending database migrations: {string.Join(", ", pendingMigrations)}. Run 'dotnet ef database update'.");
+            }
         }
+
+        await PortfolioContentService.SeedPublishedCatalogAsync(dataContext);
     }
 }
 

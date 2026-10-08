@@ -4,10 +4,11 @@ import { useSearchParams } from 'react-router';
 import { EmptyState, PageContainer, PageTransition, SectionTitle, TechChip } from './PortfolioCommon';
 import { usePageMetadata } from './usePageMetadata';
 import { ProjectCard } from './ProjectCard';
-import { projects, technologies } from './portfolio.data';
+import { usePublishedPortfolio } from './usePublishedPortfolio';
 
 export const ProjectsPage = () => {
   const { t } = useTranslation();
+  const { projects, technologies } = usePublishedPortfolio();
   const [searchParams, setSearchParams] = useSearchParams();
   const requested = searchParams.get('tech');
   const activeTechnology = technologies.includes(requested ?? '') ? requested : null;

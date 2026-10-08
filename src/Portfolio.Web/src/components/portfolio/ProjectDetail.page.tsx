@@ -4,15 +4,17 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 import { PageContainer, PageTransition, TechChip } from './PortfolioCommon';
 import { usePageMetadata } from './usePageMetadata';
-import { projects } from './portfolio.data';
+import { usePublishedPortfolio } from './usePublishedPortfolio';
 
 export const ProjectDetailPage = () => {
   const { slug } = useParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { projects, ready } = usePublishedPortfolio();
   const project = projects.find((item) => item.slug === slug);
   usePageMetadata(project?.title ?? t('status.404.title'), project?.shortDescription ?? t('status.404.description'));
 
+  if (!project && !ready) return null;
   if (!project)
     return (
       <PageContainer>

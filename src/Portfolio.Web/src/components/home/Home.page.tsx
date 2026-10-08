@@ -5,11 +5,12 @@ import { useNavigate } from 'react-router';
 import { PageContainer, PageTransition, Reveal, SectionTitle, TechChip, TiltFrame } from '../portfolio/PortfolioCommon';
 import { usePageMetadata } from '../portfolio/usePageMetadata';
 import { ProjectCard } from '../portfolio/ProjectCard';
-import { projects, technologies } from '../portfolio/portfolio.data';
+import { usePublishedPortfolio } from '../portfolio/usePublishedPortfolio';
 
 export const HomePage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { projects, technologies, experiences } = usePublishedPortfolio();
   usePageMetadata(t('home.metaTitle'), t('home.metaDescription'));
 
   return (
@@ -182,7 +183,18 @@ export const HomePage = () => {
 
         <Reveal>
           <Box component="section" sx={{ py: { xs: 8, md: 12 } }}>
-            <SectionTitle eyebrow={t('home.experienceEyebrow')} title={t('home.experienceTitle')} description={t('home.experienceDescription')} />
+            <SectionTitle
+              eyebrow={t('home.experienceEyebrow')}
+              title={experiences.length ? t('experience.title') : t('home.experienceTitle')}
+              description={experiences.length ? undefined : t('home.experienceDescription')}
+            />
+            {experiences.slice(0, 3).map((experience) => (
+              <Typography key={`${experience.company}-${experience.startDate}`} sx={{ mb: 1 }}>
+                {experience.position}
+                {' · '}
+                {experience.company}
+              </Typography>
+            ))}
             <Button onClick={() => navigate(PathEnum.Experience)} endIcon={<Icon>arrow_forward</Icon>}>
               {t('home.viewExperience')}
             </Button>

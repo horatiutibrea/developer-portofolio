@@ -138,6 +138,44 @@
       "messageMax": "The message can contain at most 4,000 characters."
     }
   },
+  "contentAdmin": {
+    "menu": "Portfolio admin",
+    "intro": "Choose a section to update what visitors see. Published items appear on the public site.",
+    "experience": "Experience",
+    "projects": "Projects",
+    "technologies": "Technologies",
+    "users": "Users",
+    "viewSite": "View site",
+    "add": "Add",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "published": "Published",
+    "draft": "Hidden from the site",
+    "visible": "Visible on the site",
+    "company": "Company",
+    "position": "Position",
+    "location": "Location",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "current": "I currently work here",
+    "description": "Description",
+    "order": "Display order",
+    "title": "Title",
+    "slug": "Address slug",
+    "shortDescription": "Short description",
+    "imageUrl": "Image URL",
+    "repositoryUrl": "Repository URL",
+    "liveUrl": "Live URL",
+    "featured": "Featured on the home page",
+    "name": "Name",
+    "category": "Category",
+    "emptyExperience": "No roles yet. Add the first company, position and dates.",
+    "emptyProjects": "No projects yet.",
+    "emptyTechnologies": "No technologies yet.",
+    "confirmDelete": "Delete this item? It will disappear from the public site."
+  },
   "admin": {
     "title": "Admin access",
     "description": "Sign in with the authorized Google account to manage portfolio content.",
@@ -211,6 +249,10 @@
     "userDeleted": "The user was deleted successfully.",
     "roleAdded": "The role was added successfully.",
     "roleUpdated": "The role was updated successfully.",
-    "roleDeleted": "The role was deleted successfully."
+    "roleDeleted": "The role was deleted successfully.",
+    "contentDeleted": "The item was deleted.",
+    "contentNotFound": "The item no longer exists.",
+    "slugTaken": "Another project already uses this address.",
+    "nameTaken": "Another technology already uses this name."
   }
 }

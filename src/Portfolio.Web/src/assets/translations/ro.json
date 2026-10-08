@@ -138,6 +138,44 @@
       "messageMax": "Mesajul poate avea cel mult 4.000 de caractere."
     }
   },
+  "contentAdmin": {
+    "menu": "Administrare portofoliu",
+    "intro": "Alege o secțiune ca să actualizezi ce văd vizitatorii. Elementele publicate apar pe site.",
+    "experience": "Experiență",
+    "projects": "Proiecte",
+    "technologies": "Tehnologii",
+    "users": "Utilizatori",
+    "viewSite": "Vezi site-ul",
+    "add": "Adaugă",
+    "edit": "Editează",
+    "save": "Salvează",
+    "cancel": "Renunță",
+    "delete": "Șterge",
+    "published": "Publicat",
+    "draft": "Ascuns de pe site",
+    "visible": "Vizibil pe site",
+    "company": "Companie",
+    "position": "Poziție",
+    "location": "Locație",
+    "startDate": "Data de început",
+    "endDate": "Data de final",
+    "current": "Lucrez aici în prezent",
+    "description": "Descriere",
+    "order": "Ordine de afișare",
+    "title": "Titlu",
+    "slug": "Adresă",
+    "shortDescription": "Descriere scurtă",
+    "imageUrl": "URL imagine",
+    "repositoryUrl": "URL repository",
+    "liveUrl": "URL live",
+    "featured": "Evidențiat pe pagina principală",
+    "name": "Nume",
+    "category": "Categorie",
+    "emptyExperience": "Nu există roluri. Adaugă prima companie, poziția și datele.",
+    "emptyProjects": "Nu există proiecte.",
+    "emptyTechnologies": "Nu există tehnologii.",
+    "confirmDelete": "Ștergi acest element? Va dispărea de pe site."
+  },
   "admin": {
     "title": "Acces administrare",
     "description": "Autentifică-te cu un cont Google autorizat pentru a administra conținutul portofoliului.",
@@ -211,6 +249,10 @@
     "userDeleted": "Utilizator șters cu succes.",
     "roleAdded": "Rol adăugat cu succes.",
     "roleUpdated": "Rol actualizat cu succes.",
-    "roleDeleted": "Rol șters cu succes."
+    "roleDeleted": "Rol șters cu succes.",
+    "contentDeleted": "Elementul a fost șters.",
+    "contentNotFound": "Elementul nu mai există.",
+    "slugTaken": "Alt proiect folosește deja această adresă.",
+    "nameTaken": "Altă tehnologie folosește deja acest nume."
   }
 }

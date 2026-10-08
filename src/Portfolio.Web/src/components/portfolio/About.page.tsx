@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 import { PageContainer, PageTransition, Reveal, SectionTitle, TechChip } from './PortfolioCommon';
 import { liftCardSx } from './portfolio.styles';
 import { usePageMetadata } from './usePageMetadata';
-import { technologies } from './portfolio.data';
+import { usePublishedPortfolio } from './usePublishedPortfolio';
 
 const focusAreas = [
   { icon: 'dns', key: 'backend' },
@@ -20,6 +20,7 @@ const focusAreas = [
 export const AboutPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { technologies } = usePublishedPortfolio();
   usePageMetadata(t('about.metaTitle'), t('about.metaDescription'));
 
   return (

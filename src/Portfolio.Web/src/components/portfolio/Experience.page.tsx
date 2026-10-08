@@ -3,10 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { EmptyState, PageContainer, PageTransition, Reveal, SectionTitle, TechChip } from './PortfolioCommon';
 import { liftCardSx } from './portfolio.styles';
 import { usePageMetadata } from './usePageMetadata';
-import { experiences } from './portfolio.data';
+import { usePublishedPortfolio } from './usePublishedPortfolio';
 
 export const ExperiencePage = () => {
   const { t } = useTranslation();
+  const { experiences } = usePublishedPortfolio();
   usePageMetadata(t('experience.metaTitle'), t('experience.metaDescription'));
 
   return (
