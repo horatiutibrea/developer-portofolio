@@ -1,0 +1,29 @@
+# Frontend
+src/Portfolio.Web/node_modules/
+src/Portfolio.Web/dist/
+src/Portfolio.Web/coverage/
+src/Portfolio.Web/playwright-report/
+src/Portfolio.Web/test-results/
+src/Portfolio.Web/*.tsbuildinfo
+src/Portfolio.Web/.env.development
+
+# Backend
+src/Portfolio.Api/bin/
+src/Portfolio.Api/obj/
+src/Portfolio.Api/publish/
+src/Portfolio.Api/*.csproj.user
+src/Portfolio.Api/Properties/PublishProfiles/*.user
+**/bin/
+**/obj/
+**/TestResults/
+
+# Local publish output
+/publish/
+/artifacts/
+
+# IDE and operating system
+.vs/
+.vscode/
+.idea/
+*.suo
+.DS_Store

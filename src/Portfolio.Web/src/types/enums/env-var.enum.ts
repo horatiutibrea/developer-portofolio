@@ -1,0 +1,4 @@
+export enum EnvVarEnum {
+  VITE_APP_ENV = 'VITE_APP_ENV',
+  VITE_GOOGLE_AUTH_CLIENT_ID = 'VITE_GOOGLE_AUTH_CLIENT_ID',
+} 

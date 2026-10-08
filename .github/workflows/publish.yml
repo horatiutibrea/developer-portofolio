@@ -1,0 +1,67 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: publish-horatiutibrea
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Test and publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: src/Portfolio.Web/package-lock.json
+
+      - name: Test API
+        run: dotnet test Portfolio.sln -c Release
+
+      - name: Publish API
+        run: dotnet publish src/Portfolio.Api/Portfolio.Api.csproj -c Release -o "${{ runner.temp }}/api" --no-self-contained
+
+      - name: Build frontend
+        working-directory: src/Portfolio.Web
+        run: npm ci && npm test && npm run build
+
+      - name: Pack release
+        shell: bash
+        run: |
+          tar -czf "${{ runner.temp }}/portfolio-api.tgz" -C "${{ runner.temp }}/api" .
+          tar -czf "${{ runner.temp }}/portfolio-web.tgz" -C src/Portfolio.Web/dist .
+
+      - name: Publish to the server
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_HOST: 80.97.27.254
+          DEPLOY_USER: horatiu
+        shell: bash
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' '80.97.27.254 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP+JIItTBvcSXXC7jPNOlGlpdpziaZTMprNXQoN6mjtS' > ~/.ssh/known_hosts
+          scp -i ~/.ssh/deploy_key -o IdentitiesOnly=yes \
+            "${{ runner.temp }}/portfolio-api.tgz" \
+            "${{ runner.temp }}/portfolio-web.tgz" \
+            deploy/publish-remote.sh \
+            "${DEPLOY_USER}@${DEPLOY_HOST}:/tmp/"
+          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes \
+            "${DEPLOY_USER}@${DEPLOY_HOST}" \
+            bash /tmp/publish-remote.sh
