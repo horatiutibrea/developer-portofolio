@@ -18,6 +18,7 @@ declare module 'axios' {
 
   export interface InternalAxiosRequestConfig {
     apiNotifications?: boolean | ApiNotificationOptions,
+    csrfRetried?: boolean,
   }
 }
 
@@ -110,6 +111,16 @@ export const axiosInstance = axios.create({
 
 let csrfInitialization: Promise<string> | undefined;
 let csrfToken: string | undefined;
+
+export const clearCsrfToken = () => {
+  csrfToken = undefined;
+};
+
+const isStaleCsrfRejection = (data: unknown) => {
+  if (!data || typeof data !== 'object') return false;
+  const value = data as Record<string, unknown>;
+  return value.title === 'Bad Request' && value.messageKey === undefined && value.errors === undefined;
+};
 axiosInstance.interceptors.request.use(async (config) => {
   const method = config.method?.toUpperCase() ?? 'GET';
   if (!['GET', 'HEAD', 'OPTIONS', 'TRACE'].includes(method)
@@ -148,6 +159,13 @@ axiosInstance.interceptors.response.use(
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('portfolio:api-end'));
     }
+    const config = error.config;
+    if (config && error.response?.status === 400 && !config.csrfRetried && isStaleCsrfRejection(error.response.data)) {
+      config.csrfRetried = true;
+      clearCsrfToken();
+      return axiosInstance.request(config);
+    }
+    if (error.response?.status === 401) clearCsrfToken();
     if (notificationsEnabled(error.config, 'error')) {
       const message = errorMessage(error);
       const status = error.response?.status;

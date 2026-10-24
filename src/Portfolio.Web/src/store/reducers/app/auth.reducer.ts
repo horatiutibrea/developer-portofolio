@@ -2,7 +2,7 @@ import { configuration } from '@config';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
 import { AuthenticateUserInput, AppUser } from './models';
-import { axiosInstance } from '@modules';
+import { axiosInstance, clearCsrfToken } from '@modules';
 import { RootState } from 'src/store/store';
 
 const getInitialState = () => {
@@ -34,6 +34,7 @@ export const authenticateUser = createAsyncThunk(
         '/api/auth/verify',
         input,
       );
+      clearCsrfToken();
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -56,6 +57,7 @@ export const authenticateAdmin = createAsyncThunk(
         '/api/auth/verify/admin',
         input,
       );
+      clearCsrfToken();
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -75,7 +77,9 @@ export const logoutUser = createAsyncThunk<undefined, undefined, { state: RootSt
   async (_, { rejectWithValue }) => {
     try {
       await axiosInstance.post('/api/auth/logout');
+      clearCsrfToken();
     } catch (error) {
+      clearCsrfToken();
       if (axios.isAxiosError(error) && error.response) {
         return rejectWithValue(error.response.data);
       }

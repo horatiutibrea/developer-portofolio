@@ -1,7 +1,8 @@
 import {
-  Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Icon, Paper, Stack, Typography,
+  Button, Dialog, DialogActions, DialogContent, DialogTitle, Icon, Stack, Typography,
 } from '@mui/material';
 import { AdminCheck, AdminTextField } from './AdminFields';
+import { AdminTable } from './AdminTable';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -43,21 +44,20 @@ export const TechnologiesAdminPage = () => {
         <Typography variant="h4">{t('contentAdmin.technologies')}</Typography>
         <Button variant="contained" startIcon={<Icon>add</Icon>} onClick={() => open()}>{t('contentAdmin.add')}</Button>
       </Stack>
-      {items.length === 0 && <Paper sx={{ p: 3 }}><Typography color="text.secondary">{t('contentAdmin.emptyTechnologies')}</Typography></Paper>}
-      {items.map((item) => (
-        <Paper key={item.id} sx={{ p: 2.5 }}>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ justifyContent: 'space-between' }}>
-            <Box>
-              <Typography variant="h6">{item.name}</Typography>
-              <Typography color="text.secondary">{item.category}</Typography>
-            </Box>
-            <Stack direction="row" spacing={1}>
-              <Button onClick={() => open(item)}>{t('contentAdmin.edit')}</Button>
-              <Button color="error" onClick={() => remove(item.id)}>{t('contentAdmin.delete')}</Button>
-            </Stack>
-          </Stack>
-        </Paper>
-      ))}
+      <AdminTable
+        columns={[t('contentAdmin.name'), t('contentAdmin.category'), t('contentAdmin.status')]}
+        empty={t('contentAdmin.emptyTechnologies')}
+        rows={items.map((item) => ({
+          id: item.id,
+          onEdit: () => open(item),
+          onDelete: () => remove(item.id),
+          cells: [
+            item.name,
+            item.category,
+            item.isVisible ? t('contentAdmin.visible') : t('contentAdmin.draft'),
+          ],
+        }))}
+      />
       <Dialog open={draft !== null} onClose={() => setDraft(null)} fullWidth maxWidth="sm">
         <DialogTitle>{editingId ? t('contentAdmin.edit') : t('contentAdmin.add')}</DialogTitle>
         {draft && (

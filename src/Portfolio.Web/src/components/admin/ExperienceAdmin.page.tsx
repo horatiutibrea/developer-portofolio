@@ -1,7 +1,8 @@
 import {
-  Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Icon, Paper, Stack, Typography,
+  Button, Dialog, DialogActions, DialogContent, DialogTitle, Icon, Stack, Typography,
 } from '@mui/material';
 import { AdminCheck, AdminTextField } from './AdminFields';
+import { AdminTable } from './AdminTable';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -62,28 +63,21 @@ export const ExperienceAdminPage = () => {
         <Typography variant="h4">{t('contentAdmin.experience')}</Typography>
         <Button variant="contained" startIcon={<Icon>add</Icon>} onClick={() => open()}>{t('contentAdmin.add')}</Button>
       </Stack>
-      {items.length === 0 && <Paper sx={{ p: 3 }}><Typography color="text.secondary">{t('contentAdmin.emptyExperience')}</Typography></Paper>}
-      {items.map((item) => (
-        <Paper key={item.id} sx={{ p: 2.5 }}>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ justifyContent: 'space-between' }}>
-            <Box>
-              <Typography variant="h6">{item.position}</Typography>
-              <Typography color="text.secondary">
-                {item.company}
-                {' · '}
-                {dateValue(item.startDate)}
-                {' — '}
-                {item.isCurrent ? t('experience.present') : dateValue(item.endDate)}
-              </Typography>
-              {!item.isPublished && <Typography variant="caption">{t('contentAdmin.draft')}</Typography>}
-            </Box>
-            <Stack direction="row" spacing={1}>
-              <Button onClick={() => open(item)}>{t('contentAdmin.edit')}</Button>
-              <Button color="error" onClick={() => remove(item.id)}>{t('contentAdmin.delete')}</Button>
-            </Stack>
-          </Stack>
-        </Paper>
-      ))}
+      <AdminTable
+        columns={[t('contentAdmin.position'), t('contentAdmin.company'), t('contentAdmin.period'), t('contentAdmin.status')]}
+        empty={t('contentAdmin.emptyExperience')}
+        rows={items.map((item) => ({
+          id: item.id,
+          onEdit: () => open(item),
+          onDelete: () => remove(item.id),
+          cells: [
+            item.position,
+            item.company,
+            `${dateValue(item.startDate)} — ${item.isCurrent ? t('experience.present') : dateValue(item.endDate)}`,
+            item.isPublished ? t('contentAdmin.published') : t('contentAdmin.draft'),
+          ],
+        }))}
+      />
       <Dialog open={draft !== null} onClose={() => setDraft(null)} fullWidth maxWidth="sm">
         <DialogTitle>{editingId ? t('contentAdmin.edit') : t('contentAdmin.add')}</DialogTitle>
         {draft && (
