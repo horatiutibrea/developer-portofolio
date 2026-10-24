@@ -22,26 +22,12 @@ export interface Experience {
 }
 
 export interface ContactFormValues {
+  senderName: string;
+  senderEmail: string;
   subject: string;
   message: string;
 }
 
-export interface GoogleContactProfile {
-  firstName: string;
-  lastName: string;
-  displayName: string;
-  email: string;
-  emailVerified: boolean;
-  profilePictureUrl?: string;
-}
-
-export interface VerifiedContactIdentity {
-  profile: GoogleContactProfile;
-  googleToken: string;
-}
-
-export interface ContactMessageSubmission {
-  googleToken: string;
-  subject: string;
-  message: string;
+export interface ContactMessageSubmission extends ContactFormValues {
+  recaptchaToken: string;
 }

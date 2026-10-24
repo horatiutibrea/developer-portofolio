@@ -1,5 +1,6 @@
 using Portfolio.Api.Configuration;
 using Portfolio.Api.Services.Authentication;
+using Portfolio.Api.Services.Contact;
 using Portfolio.Api.Services.Roles;
 using Portfolio.Api.Services.Portfolio;
 using Portfolio.Api.Services.Users;
@@ -19,8 +20,12 @@ namespace Portfolio.Api.Extensions
                 .Validate(settings => !string.IsNullOrWhiteSpace(settings.Audience), "AuthSettings:Audience is required.")
                 .Validate(settings => settings.JwtValidityInHours is > 0 and <= 24, "AuthSettings:JwtValidityInHours must be between 1 and 24.")
                 .ValidateOnStart();
+            services.AddOptions<RecaptchaSettings>().Bind(config.GetSection("Recaptcha"));
             services.AddHttpClient();
+            services.AddHttpClient("recaptcha", client => client.Timeout = TimeSpan.FromSeconds(10));
             services.AddHttpContextAccessor();
+            services.AddSingleton<IRecaptchaVerifier, RecaptchaVerifier>();
+            services.AddScoped<ContactMessageService>();
 
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IUserService, UserService>();

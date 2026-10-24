@@ -5,14 +5,19 @@ using Microsoft.AspNetCore.RateLimiting;
 using Portfolio.Api.DTOs.Authentication;
 using Portfolio.Api.DTOs.Contact;
 using Portfolio.Api.Services.Authentication;
+using Portfolio.Api.Services.Contact;
+using Portfolio.Api.Services.Portfolio;
 
 namespace Portfolio.Api.Controllers;
 
 [ApiController]
 [Route("api/contact")]
-public sealed class ContactController(IAuthenticationService authenticationService) : ControllerBase
+public sealed class ContactController(
+    IAuthenticationService authenticationService,
+    ContactMessageService messages) : ControllerBase
 {
     private readonly IAuthenticationService _authenticationService = authenticationService;
+    private readonly ContactMessageService _messages = messages;
 
     [AllowAnonymous]
     [HttpPost("google-profile")]
@@ -65,6 +70,40 @@ public sealed class ContactController(IAuthenticationService authenticationServi
                 Message = "Credentialul Google este invalid sau a expirat.",
                 MessageKey = "api.googleCredentialInvalid"
             });
+        }
+    }
+
+    [AllowAnonymous]
+    [HttpPost("messages")]
+    [EnableRateLimiting("contact-submit")]
+    public async Task<ActionResult> CreateMessage([FromBody] ContactMessagePostDTO request)
+    {
+        try
+        {
+            await _messages.SaveAsync(request, HttpContext.RequestAborted);
+            return Ok(new { MessageKey = "api.contactSent" });
+        }
+        catch (ContentRuleException exception)
+        {
+            return StatusCode(exception.Status, new { MessageKey = exception.MessageKey });
+        }
+    }
+
+    [Authorize(Roles = "SUPERADMIN")]
+    [HttpGet("messages")]
+    public async Task<ActionResult> ListMessages() => Ok(await _messages.ListAsync(HttpContext.RequestAborted));
+
+    [Authorize(Roles = "SUPERADMIN")]
+    [HttpGet("messages/{id:int}")]
+    public async Task<ActionResult> ReadMessage(int id)
+    {
+        try
+        {
+            return Ok(await _messages.ReadAsync(id, HttpContext.RequestAborted));
+        }
+        catch (ContentRuleException exception)
+        {
+            return StatusCode(exception.Status, new { MessageKey = exception.MessageKey });
         }
     }
 }

@@ -22,7 +22,7 @@ public sealed class ContactControllerTests
             IsEmailVerified = true,
             Picture = "https://example.com/avatar.jpg"
         });
-        var controller = new ContactController(authenticationService);
+        var controller = new ContactController(authenticationService, null!);
 
         var response = await controller.GetGoogleProfile(new GoogleAuthResponse
         {
@@ -50,7 +50,7 @@ public sealed class ContactControllerTests
             Email = "unverified@example.com",
             IsEmailVerified = false
         });
-        var controller = new ContactController(authenticationService);
+        var controller = new ContactController(authenticationService, null!);
 
         var response = await controller.GetGoogleProfile(new GoogleAuthResponse
         {

@@ -9,6 +9,7 @@ export enum PathEnum {
   AdminProjects = '/admin/projects',
   AdminTechnologies = '/admin/technologies',
   AdminUsers = '/admin/users',
+  AdminMessages = '/admin/messages',
   Users = '/users',
   Forbidden = '/forbidden',
   NotFound = '/not-found',

@@ -12,6 +12,7 @@ const links = [
   { path: PathEnum.AdminExperience, icon: 'work', label: 'contentAdmin.experience' },
   { path: PathEnum.AdminProjects, icon: 'terminal', label: 'contentAdmin.projects' },
   { path: PathEnum.AdminTechnologies, icon: 'memory', label: 'contentAdmin.technologies' },
+  { path: PathEnum.AdminMessages, icon: 'inbox', label: 'contentAdmin.messages' },
   { path: PathEnum.AdminUsers, icon: 'manage_accounts', label: 'contentAdmin.users' },
 ] as const;
 

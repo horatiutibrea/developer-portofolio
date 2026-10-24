@@ -129,9 +129,14 @@
     "send": "Trimite mesajul",
     "sending": "Se trimite…",
     "success": "Mulțumesc—mesajul a fost trimis.",
-    "unavailable": "API-ul de contact nu este disponibil încă. Mesajul nu a fost trimis și nici salvat.",
+    "unavailable": "Mesajul nu a putut fi trimis. Încearcă din nou.",
+    "captchaFailed": "Confirmarea reCAPTCHA a expirat sau nu a fost acceptată. Bifează din nou.",
+    "captchaMissing": "Verificarea reCAPTCHA nu este configurată.",
     "validation": {
       "identity": "Continuă cu Google înainte de a completa mesajul.",
+      "name": "Introdu numele.",
+      "email": "Introdu o adresă de email validă.",
+      "captcha": "Confirmă că nu ești un robot.",
       "subject": "Introdu cel puțin 3 caractere.",
       "subjectMax": "Subiectul poate avea cel mult 250 de caractere.",
       "message": "Introdu cel puțin 20 de caractere.",
@@ -145,6 +150,15 @@
     "projects": "Proiecte",
     "technologies": "Tehnologii",
     "users": "Utilizatori",
+    "messages": "Mesaje",
+    "emptyMessages": "Nu există mesaje.",
+    "received": "Primit",
+    "openMessage": "Citește",
+    "messageStatus": {
+      "New": "Nou",
+      "Read": "Citit",
+      "Resolved": "Rezolvat"
+    },
     "viewSite": "Vezi site-ul",
     "add": "Adaugă",
     "edit": "Editează",
@@ -256,6 +270,10 @@
     "contentDeleted": "Elementul a fost șters.",
     "contentNotFound": "Elementul nu mai există.",
     "slugTaken": "Alt proiect folosește deja această adresă.",
-    "nameTaken": "Altă tehnologie folosește deja acest nume."
+    "nameTaken": "Altă tehnologie folosește deja acest nume.",
+    "contactSent": "Mesajul a fost trimis.",
+    "recaptchaFailed": "Confirmarea reCAPTCHA nu a fost acceptată.",
+    "contactUnavailable": "Trimiterea mesajelor nu este disponibilă momentan.",
+    "messageNotFound": "Mesajul nu mai există."
   }
 }

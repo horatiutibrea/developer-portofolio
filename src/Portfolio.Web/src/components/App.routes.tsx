@@ -17,6 +17,7 @@ const ExperienceAdminPage = lazy(() => import('./admin/ExperienceAdmin.page').th
 const ProjectsAdminPage = lazy(() => import('./admin/ProjectsAdmin.page').then((module) => ({ default: module.ProjectsAdminPage })));
 const TechnologiesAdminPage = lazy(() => import('./admin/TechnologiesAdmin.page').then((module) => ({ default: module.TechnologiesAdminPage })));
 const UsersPage = lazy(() => import('./users').then((module) => ({ default: module.UsersPage })));
+const MessagesAdminPage = lazy(() => import('./admin/MessagesAdmin.page').then((module) => ({ default: module.MessagesAdminPage })));
 
 const superadminRoles = [UserRoleEnum.Superadmin];
 
@@ -36,6 +37,7 @@ export const AppRoutes = () => {
           <Route path="projects" element={<ProjectsAdminPage />} />
           <Route path="technologies" element={<TechnologiesAdminPage />} />
           <Route path="users" element={<UsersPage />} />
+          <Route path="messages" element={<MessagesAdminPage />} />
         </Route>
         <Route
           path={PathEnum.Users}

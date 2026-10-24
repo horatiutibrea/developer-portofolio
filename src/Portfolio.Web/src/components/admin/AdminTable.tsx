@@ -7,8 +7,9 @@ import { useTranslation } from 'react-i18next';
 type Row = {
   id: number,
   cells: ReactNode[],
-  onEdit: () => void,
-  onDelete: () => void,
+  onEdit?: () => void,
+  onDelete?: () => void,
+  actions?: ReactNode,
 };
 
 type Props = {
@@ -39,10 +40,12 @@ export const AdminTable = ({ columns, rows, empty }: Props) => {
                 <TableCell key={`${row.id}-${index}`}>{cell}</TableCell>
               ))}
               <TableCell align="right">
-                <Stack direction="row" spacing={1} sx={{ justifyContent: 'flex-end' }}>
-                  <Button size="small" onClick={row.onEdit}>{t('contentAdmin.edit')}</Button>
-                  <Button size="small" color="error" onClick={row.onDelete}>{t('contentAdmin.delete')}</Button>
-                </Stack>
+                {row.actions ?? (
+                  <Stack direction="row" spacing={1} sx={{ justifyContent: 'flex-end' }}>
+                    <Button size="small" onClick={row.onEdit}>{t('contentAdmin.edit')}</Button>
+                    <Button size="small" color="error" onClick={row.onDelete}>{t('contentAdmin.delete')}</Button>
+                  </Stack>
+                )}
               </TableCell>
             </TableRow>
           ))}

@@ -22,6 +22,14 @@ using Asp.Versioning;
 AppContext.SetSwitch("System.Net.DisableIPv6", true);
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddJsonFile(
+    Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+        ".config",
+        "developer-portfolio",
+        "secrets.json"),
+    optional: true,
+    reloadOnChange: false);
 
 builder.Host.UseSerilog((context, _, logger) => logger
     .ReadFrom.Configuration(context.Configuration)
@@ -133,6 +141,15 @@ builder.Services.AddRateLimiter(options =>
             _ => new FixedWindowRateLimiterOptions
             {
                 PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            }));
+    options.AddPolicy("contact-submit", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
                 Window = TimeSpan.FromMinutes(1),
                 QueueLimit = 0
             }));
@@ -279,16 +296,7 @@ using (var migrationScope = app.Services.CreateScope())
     var dataContext = migrationScope.ServiceProvider.GetRequiredService<DataContext>();
     if (dataContext.Database.IsRelational())
     {
-        if (configuration.GetValue("Database:FailOnPendingMigrations", true))
-        {
-            var pendingMigrations = await dataContext.Database.GetPendingMigrationsAsync();
-            if (pendingMigrations.Any())
-            {
-                throw new InvalidOperationException(
-                    $"Pending database migrations: {string.Join(", ", pendingMigrations)}. Run 'dotnet ef database update'.");
-            }
-        }
-
+        await dataContext.Database.MigrateAsync();
         await PortfolioContentService.SeedPublishedCatalogAsync(dataContext);
     }
 }

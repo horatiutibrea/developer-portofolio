@@ -1,40 +1,41 @@
 import { Alert, Box, Button, CircularProgress, Icon, LinearProgress, Paper, Stack, TextField } from '@mui/material';
+import axios from 'axios';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ContactGoogleIdentity } from './ContactGoogleIdentity';
+import { ContactRecaptcha } from './ContactRecaptcha';
 import { PageContainer, PageTransition, SectionTitle } from './PortfolioCommon';
 import { usePageMetadata } from './usePageMetadata';
-import { ContactFormValues, VerifiedContactIdentity } from './portfolio.models';
+import { ContactFormValues } from './portfolio.models';
 import { submitContactMessage } from './contact.service';
 
-type FormErrors = Partial<Record<keyof ContactFormValues | 'identity', string>>;
+type FormErrors = Partial<Record<keyof ContactFormValues | 'captcha', string>>;
 type SubmitState = 'idle' | 'loading' | 'success' | 'error';
 
-const initialValues: ContactFormValues = { subject: '', message: '' };
+const initialValues: ContactFormValues = { senderName: '', senderEmail: '', subject: '', message: '' };
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY ?? '';
 
 export const ContactPage = () => {
   const { t } = useTranslation();
-  const [identity, setIdentity] = useState<VerifiedContactIdentity | null>(null);
   const [values, setValues] = useState(initialValues);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaVersion, setCaptchaVersion] = useState(0);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [submitError, setSubmitError] = useState('');
   const [submitState, setSubmitState] = useState<SubmitState>('idle');
   usePageMetadata(t('contact.metaTitle'), t('contact.metaDescription'));
 
   const validate = () => {
     const nextErrors: FormErrors = {};
-    if (!identity) nextErrors.identity = t('contact.validation.identity');
+    if (values.senderName.trim().length < 2) nextErrors.senderName = t('contact.validation.name');
+    if (!emailPattern.test(values.senderEmail.trim())) nextErrors.senderEmail = t('contact.validation.email');
     if (values.subject.trim().length < 3) nextErrors.subject = t('contact.validation.subject');
     if (values.message.trim().length < 20) nextErrors.message = t('contact.validation.message');
     if (values.subject.length > 250) nextErrors.subject = t('contact.validation.subjectMax');
     if (values.message.length > 4000) nextErrors.message = t('contact.validation.messageMax');
+    if (!captchaToken) nextErrors.captcha = t('contact.validation.captcha');
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
-  };
-
-  const handleIdentityChange = (nextIdentity: VerifiedContactIdentity | null) => {
-    setIdentity(nextIdentity);
-    setErrors((current) => ({ ...current, identity: undefined }));
-    setSubmitState('idle');
   };
 
   const handleChange = (field: keyof ContactFormValues) => (event: ChangeEvent<HTMLInputElement>) => {
@@ -45,18 +46,27 @@ export const ContactPage = () => {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!validate() || !identity) return;
+    if (!validate() || !captchaToken) return;
 
     setSubmitState('loading');
+    setSubmitError('');
     try {
-      const result = await submitContactMessage({
-        googleToken: identity.googleToken,
+      await submitContactMessage({
+        senderName: values.senderName.trim(),
+        senderEmail: values.senderEmail.trim(),
         subject: values.subject.trim(),
         message: values.message.trim(),
+        recaptchaToken: captchaToken,
       });
-      setSubmitState(result.status === 'sent' ? 'success' : 'error');
-      if (result.status === 'sent') setValues(initialValues);
-    } catch {
+      setValues(initialValues);
+      setCaptchaToken(null);
+      setCaptchaVersion((current) => current + 1);
+      setSubmitState('success');
+    } catch (error) {
+      const messageKey = axios.isAxiosError(error) ? error.response?.data?.messageKey : undefined;
+      setSubmitError(messageKey === 'api.recaptchaFailed' ? t('contact.captchaFailed') : t('contact.unavailable'));
+      setCaptchaToken(null);
+      setCaptchaVersion((current) => current + 1);
       setSubmitState('error');
     }
   };
@@ -96,11 +106,30 @@ export const ContactPage = () => {
           <Paper component="form" noValidate onSubmit={handleSubmit} sx={{ p: { xs: 3, sm: 4, md: 5 } }}>
             <Stack spacing={2.5}>
               {submitState === 'success' && <Alert severity="success">{t('contact.success')}</Alert>}
-              {submitState === 'error' && <Alert severity="info">{t('contact.unavailable')}</Alert>}
+              {submitState === 'error' && <Alert severity="info">{submitError}</Alert>}
+              {!siteKey && <Alert severity="warning">{t('contact.captchaMissing')}</Alert>}
 
-              <ContactGoogleIdentity identity={identity} onChange={handleIdentityChange} />
-              {errors.identity && <Alert severity="warning">{errors.identity}</Alert>}
-
+              <TextField
+                label={t('contact.name')}
+                value={values.senderName}
+                onChange={handleChange('senderName')}
+                error={Boolean(errors.senderName)}
+                helperText={errors.senderName}
+                slotProps={{ htmlInput: { maxLength: 120 } }}
+                required
+                fullWidth
+              />
+              <TextField
+                label={t('contact.email')}
+                type="email"
+                value={values.senderEmail}
+                onChange={handleChange('senderEmail')}
+                error={Boolean(errors.senderEmail)}
+                helperText={errors.senderEmail}
+                slotProps={{ htmlInput: { maxLength: 200 } }}
+                required
+                fullWidth
+              />
               <TextField
                 label={t('contact.subject')}
                 value={values.subject}
@@ -108,7 +137,6 @@ export const ContactPage = () => {
                 error={Boolean(errors.subject)}
                 helperText={errors.subject ?? t('contact.characters', { count: values.subject.length, max: 250 })}
                 slotProps={{ htmlInput: { maxLength: 250 } }}
-                disabled={!identity}
                 required
                 fullWidth
               />
@@ -120,7 +148,6 @@ export const ContactPage = () => {
                   error={Boolean(errors.message)}
                   helperText={errors.message ?? `${t('contact.messageHint')} · ${t('contact.characters', { count: values.message.length, max: 4000 })}`}
                   slotProps={{ htmlInput: { maxLength: 4000 } }}
-                  disabled={!identity}
                   required
                   fullWidth
                   multiline
@@ -131,14 +158,16 @@ export const ContactPage = () => {
                   value={Math.min(100, (values.message.trim().length / 20) * 100)}
                   color={values.message.trim().length >= 20 ? 'success' : 'primary'}
                   aria-hidden
-                  sx={{ mt: 1, borderRadius: 99, opacity: identity ? 1 : 0.4 }}
+                  sx={{ mt: 1, borderRadius: 99 }}
                 />
               </Box>
+              {siteKey && <ContactRecaptcha key={captchaVersion} siteKey={siteKey} onChange={setCaptchaToken} />}
+              {errors.captcha && <Alert severity="warning">{errors.captcha}</Alert>}
               <Button
                 type="submit"
                 variant="contained"
                 size="large"
-                disabled={!identity || submitState === 'loading'}
+                disabled={!siteKey || submitState === 'loading'}
                 startIcon={submitState === 'loading' ? <CircularProgress size={18} color="inherit" /> : <Icon>send</Icon>}
                 sx={{ alignSelf: { sm: 'flex-start' } }}
               >

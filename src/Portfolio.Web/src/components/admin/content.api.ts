@@ -66,3 +66,20 @@ export const saveTechnology = (input: TechnologyInput, id?: number) => (id
   ? axiosInstance.put<TechnologyRecord>(`/api/portfolio/technologies/${id}`, input)
   : axiosInstance.post<TechnologyRecord>('/api/portfolio/technologies', input)).then((response) => response.data);
 export const deleteTechnology = (id: number) => axiosInstance.delete(`/api/portfolio/technologies/${id}`);
+
+export type ContactMessageSummary = {
+  id: number,
+  senderName: string,
+  senderEmail: string,
+  subject: string,
+  status: string,
+  createdAt: string,
+};
+
+export type ContactMessageDetail = ContactMessageSummary & {
+  message: string,
+  readAt?: string | null,
+};
+
+export const loadContactMessages = () => read<ContactMessageSummary[]>('/api/contact/messages');
+export const readContactMessage = (id: number) => read<ContactMessageDetail>(`/api/contact/messages/${id}`);

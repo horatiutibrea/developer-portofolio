@@ -129,9 +129,14 @@
     "send": "Send message",
     "sending": "Sending…",
     "success": "Thanks—your message was sent.",
-    "unavailable": "The contact API is not available yet. Your message was not sent or stored.",
+    "unavailable": "The message could not be sent. Please try again.",
+    "captchaFailed": "The reCAPTCHA check expired or was not accepted. Tick it again.",
+    "captchaMissing": "reCAPTCHA is not configured.",
     "validation": {
       "identity": "Continue with Google before completing the message.",
+      "name": "Enter your name.",
+      "email": "Enter a valid email address.",
+      "captcha": "Confirm that you are not a robot.",
       "subject": "Enter at least 3 characters.",
       "subjectMax": "The subject can contain at most 250 characters.",
       "message": "Enter at least 20 characters.",
@@ -145,6 +150,15 @@
     "projects": "Projects",
     "technologies": "Technologies",
     "users": "Users",
+    "messages": "Messages",
+    "emptyMessages": "No messages yet.",
+    "received": "Received",
+    "openMessage": "Read",
+    "messageStatus": {
+      "New": "New",
+      "Read": "Read",
+      "Resolved": "Resolved"
+    },
     "viewSite": "View site",
     "add": "Add",
     "edit": "Edit",
@@ -256,6 +270,10 @@
     "contentDeleted": "The item was deleted.",
     "contentNotFound": "The item no longer exists.",
     "slugTaken": "Another project already uses this address.",
-    "nameTaken": "Another technology already uses this name."
+    "nameTaken": "Another technology already uses this name.",
+    "contactSent": "The message was sent.",
+    "recaptchaFailed": "The reCAPTCHA check was not accepted.",
+    "contactUnavailable": "Message sending is unavailable right now.",
+    "messageNotFound": "The message no longer exists."
   }
 }
