@@ -319,7 +319,7 @@ app.MapHealthChecks("/health/ready", new HealthCheckOptions
 }).AllowAnonymous();
 app.Run();
 
-static async Task EnsureVisitorContactColumnsAsync(DataContext dataContext, ILogger logger)
+static async Task EnsureVisitorContactColumnsAsync(DataContext dataContext, Microsoft.Extensions.Logging.ILogger logger)
 {
     var statements = new[]
     {
