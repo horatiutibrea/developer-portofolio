@@ -238,7 +238,7 @@ namespace Portfolio.Api.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ConsentId")
+                    b.Property<int>("ConsentId")
                         .HasColumnType("integer");
 
                     b.Property<DateTimeOffset>("CreatedAt")
@@ -255,16 +255,6 @@ namespace Portfolio.Api.Data.Migrations
                     b.Property<DateTimeOffset?>("ResolvedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("SenderEmail")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<string>("SenderName")
-                        .IsRequired()
-                        .HasMaxLength(120)
-                        .HasColumnType("character varying(120)");
-
                     b.Property<int>("Status")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
@@ -275,7 +265,7 @@ namespace Portfolio.Api.Data.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -577,12 +567,14 @@ namespace Portfolio.Api.Data.Migrations
                     b.HasOne("Portfolio.Api.Models.Portfolio.Consent", "Consent")
                         .WithOne("ContactMessage")
                         .HasForeignKey("Portfolio.Api.Models.Portfolio.ContactMessage", "ConsentId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("Portfolio.Api.Models.Identity.User", "User")
                         .WithMany("ContactMessages")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("Consent");
 

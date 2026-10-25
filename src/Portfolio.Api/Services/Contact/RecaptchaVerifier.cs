@@ -38,6 +38,8 @@ public sealed class RecaptchaVerifier(IHttpClientFactory httpClientFactory, IOpt
         var payload = await response.Content.ReadFromJsonAsync<RecaptchaResponse>(cancellationToken);
         var hostname = payload?.Hostname ?? string.Empty;
         var accepted = payload?.Success == true
+            && payload.Score >= _settings.MinimumScore
+            && string.Equals(payload.Action, "contact", StringComparison.Ordinal)
             && _settings.Hostnames.Contains(hostname, StringComparer.OrdinalIgnoreCase);
         return new RecaptchaVerification(true, accepted);
     }
@@ -49,5 +51,11 @@ public sealed class RecaptchaVerifier(IHttpClientFactory httpClientFactory, IOpt
 
         [JsonPropertyName("hostname")]
         public string? Hostname { get; set; }
+
+        [JsonPropertyName("score")]
+        public double Score { get; set; }
+
+        [JsonPropertyName("action")]
+        public string? Action { get; set; }
     }
 }

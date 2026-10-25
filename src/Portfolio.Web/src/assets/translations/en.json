@@ -130,7 +130,7 @@
     "sending": "Sending…",
     "success": "Thanks—your message was sent.",
     "unavailable": "The message could not be sent. Please try again.",
-    "captchaFailed": "The reCAPTCHA check expired or was not accepted. Tick it again.",
+    "captchaFailed": "The reCAPTCHA check did not succeed. Please try again.",
     "captchaMissing": "reCAPTCHA is not configured.",
     "validation": {
       "identity": "Continue with Google before completing the message.",

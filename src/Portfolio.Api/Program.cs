@@ -296,7 +296,6 @@ using (var migrationScope = app.Services.CreateScope())
     var dataContext = migrationScope.ServiceProvider.GetRequiredService<DataContext>();
     if (dataContext.Database.IsRelational())
     {
-        await EnsureVisitorContactColumnsAsync(dataContext, app.Logger);
         await PortfolioContentService.SeedPublishedCatalogAsync(dataContext);
     }
 }
@@ -318,27 +317,6 @@ app.MapHealthChecks("/health/ready", new HealthCheckOptions
     ResponseWriter = WriteHealthResponse
 }).AllowAnonymous();
 app.Run();
-
-static async Task EnsureVisitorContactColumnsAsync(DataContext dataContext, Microsoft.Extensions.Logging.ILogger logger)
-{
-    var statements = new[]
-    {
-        """ALTER TABLE "ContactMessages" ADD COLUMN IF NOT EXISTS "SenderName" character varying(120) NOT NULL DEFAULT ''""",
-        """ALTER TABLE "ContactMessages" ADD COLUMN IF NOT EXISTS "SenderEmail" character varying(200) NOT NULL DEFAULT ''""",
-        """ALTER TABLE "ContactMessages" ALTER COLUMN "UserId" DROP NOT NULL""",
-        """ALTER TABLE "ContactMessages" ALTER COLUMN "ConsentId" DROP NOT NULL"""
-    };
-
-    try
-    {
-        foreach (var statement in statements)
-            await dataContext.Database.ExecuteSqlRawAsync(statement);
-    }
-    catch (Exception exception)
-    {
-        logger.LogError(exception, "Contact message columns could not be updated");
-    }
-}
 
 static Task WriteHealthResponse(HttpContext context, Microsoft.Extensions.Diagnostics.HealthChecks.HealthReport report)
 {

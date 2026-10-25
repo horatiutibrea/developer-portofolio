@@ -3,12 +3,13 @@ import axios from 'axios';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ContactRecaptcha } from './ContactRecaptcha';
+import { executeRecaptcha } from './contact-recaptcha';
 import { PageContainer, PageTransition, SectionTitle } from './PortfolioCommon';
 import { usePageMetadata } from './usePageMetadata';
 import { ContactFormValues } from './portfolio.models';
 import { submitContactMessage } from './contact.service';
 
-type FormErrors = Partial<Record<keyof ContactFormValues | 'captcha', string>>;
+type FormErrors = Partial<Record<keyof ContactFormValues, string>>;
 type SubmitState = 'idle' | 'loading' | 'success' | 'error';
 
 const initialValues: ContactFormValues = { senderName: '', senderEmail: '', subject: '', message: '' };
@@ -18,8 +19,6 @@ const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY ?? '';
 export const ContactPage = () => {
   const { t } = useTranslation();
   const [values, setValues] = useState(initialValues);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const [captchaVersion, setCaptchaVersion] = useState(0);
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitError, setSubmitError] = useState('');
   const [submitState, setSubmitState] = useState<SubmitState>('idle');
@@ -33,7 +32,6 @@ export const ContactPage = () => {
     if (values.message.trim().length < 20) nextErrors.message = t('contact.validation.message');
     if (values.subject.length > 250) nextErrors.subject = t('contact.validation.subjectMax');
     if (values.message.length > 4000) nextErrors.message = t('contact.validation.messageMax');
-    if (!captchaToken) nextErrors.captcha = t('contact.validation.captcha');
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
   };
@@ -46,27 +44,26 @@ export const ContactPage = () => {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!validate() || !captchaToken) return;
+    if (!validate()) return;
 
     setSubmitState('loading');
     setSubmitError('');
     try {
+      const recaptchaToken = await executeRecaptcha(siteKey);
       await submitContactMessage({
         senderName: values.senderName.trim(),
         senderEmail: values.senderEmail.trim(),
         subject: values.subject.trim(),
         message: values.message.trim(),
-        recaptchaToken: captchaToken,
+        recaptchaToken,
       });
       setValues(initialValues);
-      setCaptchaToken(null);
-      setCaptchaVersion((current) => current + 1);
       setSubmitState('success');
     } catch (error) {
       const messageKey = axios.isAxiosError(error) ? error.response?.data?.messageKey : undefined;
-      setSubmitError(messageKey === 'api.recaptchaFailed' ? t('contact.captchaFailed') : t('contact.unavailable'));
-      setCaptchaToken(null);
-      setCaptchaVersion((current) => current + 1);
+      setSubmitError(messageKey === 'api.recaptchaFailed' || !axios.isAxiosError(error)
+        ? t('contact.captchaFailed')
+        : t('contact.unavailable'));
       setSubmitState('error');
     }
   };
@@ -161,8 +158,7 @@ export const ContactPage = () => {
                   sx={{ mt: 1, borderRadius: 99 }}
                 />
               </Box>
-              {siteKey && <ContactRecaptcha key={captchaVersion} siteKey={siteKey} onChange={setCaptchaToken} />}
-              {errors.captcha && <Alert severity="warning">{errors.captcha}</Alert>}
+              {siteKey && <ContactRecaptcha siteKey={siteKey} />}
               <Button
                 type="submit"
                 variant="contained"

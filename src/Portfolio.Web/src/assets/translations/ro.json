@@ -130,7 +130,7 @@
     "sending": "Se trimite…",
     "success": "Mulțumesc—mesajul a fost trimis.",
     "unavailable": "Mesajul nu a putut fi trimis. Încearcă din nou.",
-    "captchaFailed": "Confirmarea reCAPTCHA a expirat sau nu a fost acceptată. Bifează din nou.",
+    "captchaFailed": "Verificarea reCAPTCHA nu a reușit. Încearcă din nou.",
     "captchaMissing": "Verificarea reCAPTCHA nu este configurată.",
     "validation": {
       "identity": "Continuă cu Google înainte de a completa mesajul.",

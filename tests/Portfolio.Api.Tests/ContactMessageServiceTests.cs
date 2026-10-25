@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Portfolio.Api.Data;
 using Portfolio.Api.DTOs.Contact;
+using Portfolio.Api.Models.Identity;
 using Portfolio.Api.Services.Contact;
 using Portfolio.Api.Services.Portfolio;
 
@@ -65,6 +66,14 @@ public sealed class ContactMessageServiceTests
         var context = new DataContext(new DbContextOptionsBuilder<DataContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
         await context.Database.EnsureCreatedAsync();
+        context.Users.Add(new User
+        {
+            Email = "owner@example.com",
+            FirstName = "Owner",
+            LastName = "Test",
+            SecurityStamp = Guid.NewGuid()
+        });
+        await context.SaveChangesAsync();
         return context;
     }
 

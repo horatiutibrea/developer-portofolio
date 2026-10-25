@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Portfolio.Api.Data;
 using Portfolio.Api.DTOs.Contact;
@@ -19,12 +20,26 @@ public sealed class ContactMessageService(DataContext dataContext, IRecaptchaVer
         if (!verification.Accepted)
             throw new ContentRuleException(StatusCodes.Status400BadRequest, "api.recaptchaFailed");
 
+        var user = await _dataContext.Users.OrderBy(item => item.Id).FirstOrDefaultAsync(cancellationToken)
+            ?? throw new ContentRuleException(StatusCodes.Status503ServiceUnavailable, "api.contactUnavailable");
+        var name = request.SenderName.Trim();
+        var email = DataContext.NormalizeEmail(request.SenderEmail);
+        var body = request.Message.Trim();
+        var stored = JsonSerializer.Serialize(new StoredContact(name, email, body));
+        if (stored.Length > 4000)
+            throw new ContentRuleException(StatusCodes.Status400BadRequest, "api.validationFailed");
+
         _dataContext.ContactMessages.Add(new ContactMessage
         {
-            SenderName = request.SenderName.Trim(),
-            SenderEmail = DataContext.NormalizeEmail(request.SenderEmail),
+            UserId = user.Id,
+            Consent = new Consent
+            {
+                UserId = user.Id,
+                Type = ConsentType.ContactForm,
+                PolicyVersion = "contact-form"
+            },
             Subject = request.Subject.Trim(),
-            Message = request.Message.Trim(),
+            Message = stored,
             Status = ContactMessageStatus.New
         });
         await _dataContext.SaveChangesAsync(cancellationToken);
@@ -49,26 +64,45 @@ public sealed class ContactMessageService(DataContext dataContext, IRecaptchaVer
             await _dataContext.SaveChangesAsync(cancellationToken);
         }
 
+        var stored = Unpack(message.Message);
         return new ContactMessageDetailDTO
         {
             Id = message.Id,
-            SenderName = message.SenderName,
-            SenderEmail = message.SenderEmail,
+            SenderName = stored.Name,
+            SenderEmail = stored.Email,
             Subject = message.Subject,
             Status = message.Status.ToString(),
             CreatedAt = message.CreatedAt,
-            Message = message.Message,
+            Message = stored.Body,
             ReadAt = message.ReadAt
         };
     }
 
-    private static ContactMessageSummaryDTO MapSummary(ContactMessage message) => new()
+    private static ContactMessageSummaryDTO MapSummary(ContactMessage message)
     {
-        Id = message.Id,
-        SenderName = message.SenderName,
-        SenderEmail = message.SenderEmail,
-        Subject = message.Subject,
-        Status = message.Status.ToString(),
-        CreatedAt = message.CreatedAt
-    };
+        var stored = Unpack(message.Message);
+        return new ContactMessageSummaryDTO
+        {
+            Id = message.Id,
+            SenderName = stored.Name,
+            SenderEmail = stored.Email,
+            Subject = message.Subject,
+            Status = message.Status.ToString(),
+            CreatedAt = message.CreatedAt
+        };
+    }
+
+    private static StoredContact Unpack(string message)
+    {
+        try
+        {
+            return JsonSerializer.Deserialize<StoredContact>(message) ?? new StoredContact("", "", message);
+        }
+        catch (JsonException)
+        {
+            return new StoredContact("", "", message);
+        }
+    }
+
+    private sealed record StoredContact(string Name, string Email, string Body);
 }

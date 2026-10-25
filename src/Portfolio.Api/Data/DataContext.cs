@@ -238,8 +238,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     private static void ConfigureContactMessage(EntityTypeBuilder<ContactMessage> entity)
     {
         entity.ToTable("ContactMessages");
-        entity.Property(item => item.SenderName).HasMaxLength(120).IsRequired();
-        entity.Property(item => item.SenderEmail).HasMaxLength(200).IsRequired();
         entity.Property(item => item.Subject).HasMaxLength(250).IsRequired();
         entity.Property(item => item.Message).HasMaxLength(4000).IsRequired();
         entity.Property(item => item.Status)
