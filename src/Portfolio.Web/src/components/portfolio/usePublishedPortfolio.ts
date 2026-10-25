@@ -37,7 +37,9 @@ export const usePublishedPortfolio = () => {
       .then(([experienceItems, projectItems, technologyItems]) => {
         if (!active) return;
         setExperiences(experienceItems.map(toExperience));
-        setProjects(projectItems.map(toProject));
+        const published = projectItems.map(toProject);
+        const publishedSlugs = new Set(published.map((project) => project.slug));
+        setProjects([...published, ...staticProjects.filter((project) => !publishedSlugs.has(project.slug))]);
         setTechnologies(technologyItems.map((item) => item.name));
       })
       .catch(() => undefined)

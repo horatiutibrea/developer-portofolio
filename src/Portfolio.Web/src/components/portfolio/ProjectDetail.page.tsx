@@ -41,9 +41,27 @@ export const ProjectDetailPage = () => {
           <Typography component="h1" sx={{ fontSize: { xs: '2.8rem', md: '4.5rem' }, fontWeight: 900, letterSpacing: '-.06em', lineHeight: 1.05, my: 2 }}>
             {project.title}
           </Typography>
-          <Typography sx={{ fontSize: '1.2rem', color: 'text.secondary', lineHeight: 1.8, mb: 4 }}>
-            {project.description ?? project.shortDescription}
-          </Typography>
+          <Stack spacing={2} sx={{ mb: 4 }}>
+            {(project.description ?? project.shortDescription).split('\n\n').map((paragraph) => (
+              <Typography key={paragraph} sx={{ fontSize: '1.2rem', color: 'text.secondary', lineHeight: 1.8 }}>
+                {paragraph}
+              </Typography>
+            ))}
+          </Stack>
+          {project.highlights && project.highlights.length > 0 && (
+            <Box component="section" sx={{ mb: 4 }}>
+              <Typography variant="h5" sx={{ mb: 1.5 }}>
+                {t('projects.highlights')}
+              </Typography>
+              <Stack component="ul" spacing={1} sx={{ m: 0, pl: 2.5 }}>
+                {project.highlights.map((highlight) => (
+                  <Typography key={highlight} component="li" color="text.secondary" sx={{ lineHeight: 1.7 }}>
+                    {highlight}
+                  </Typography>
+                ))}
+              </Stack>
+            </Box>
+          )}
           <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 1 }}>
             {project.technologies.map((technology) => (
               <TechChip

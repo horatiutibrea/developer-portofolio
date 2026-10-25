@@ -7,6 +7,7 @@ export interface Project {
   repositoryUrl?: string;
   liveUrl?: string;
   technologies: string[];
+  highlights?: string[];
   isFeatured: boolean;
 }
 
