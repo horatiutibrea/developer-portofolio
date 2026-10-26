@@ -50,9 +50,11 @@ export const AppBar = () => {
         position: 'fixed',
         zIndex: 1200,
         top: { xs: 10, md: compact ? 12 : 18 },
-        left: { xs: 8, md: 24 },
-        width: { xs: 'calc(100% - 16px)', md: 'calc(100% - 48px)' },
-        maxWidth: 1380,
+        insetInline: 0,
+        width: '100%',
+        maxWidth: '100%',
+        px: { xs: 1, md: 3 },
+        boxSizing: 'border-box',
         transition: 'top 180ms ease',
       }}
     >
