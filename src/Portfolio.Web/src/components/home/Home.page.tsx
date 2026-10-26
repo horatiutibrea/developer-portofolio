@@ -21,11 +21,12 @@ export const HomePage = () => {
           sx={{
             minHeight: { md: 'calc(100vh - 150px)' },
             display: 'grid',
-            gridTemplateColumns: { xs: '1fr', lg: '1.2fr .8fr' },
+            gridTemplateColumns: { xs: 'minmax(0, 1fr)', lg: 'minmax(0, 1.2fr) minmax(0, .8fr)' },
             alignItems: 'center',
             gap: { xs: 6, lg: 10 },
             py: { xs: 6, md: 10 },
             position: 'relative',
+            overflow: 'clip',
           }}
         >
           <Box
@@ -35,7 +36,7 @@ export const HomePage = () => {
               width: { xs: 220, md: 380 },
               height: { xs: 220, md: 380 },
               borderRadius: '50%',
-              right: { xs: -40, lg: '6%' },
+              right: { xs: 0, lg: '6%' },
               top: { xs: 280, lg: 20 },
               background: 'radial-gradient(circle, rgba(79,70,229,.28), transparent 68%)',
               filter: 'blur(6px)',
@@ -103,7 +104,8 @@ export const HomePage = () => {
                 component="pre"
                 sx={{
                   m: 0,
-                  overflow: 'auto',
+                  maxWidth: '100%',
+                  overflow: 'hidden',
                   fontFamily: 'ui-monospace, SFMono-Regular, Consolas, monospace',
                   fontSize: { xs: '.8rem', sm: '.92rem' },
                   lineHeight: 1.9,
@@ -171,7 +173,7 @@ export const HomePage = () => {
         <Reveal>
           <Box component="section" sx={{ py: { xs: 8, md: 12 } }}>
             <SectionTitle eyebrow={t('home.projectsEyebrow')} title={t('home.projectsTitle')} description={t('home.projectsDescription')} />
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' }, gap: 3, maxWidth: 800 }}>
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'minmax(0, 1fr)', md: 'repeat(2, minmax(0, 1fr))' }, gap: 3, maxWidth: 800 }}>
               {projects
                 .filter((project) => project.isFeatured)
                 .map((project) => (
@@ -189,7 +191,7 @@ export const HomePage = () => {
               description={experiences.length ? undefined : t('home.experienceDescription')}
             />
             {experiences.slice(0, 3).map((experience) => (
-              <Typography key={`${experience.company}-${experience.startDate}`} sx={{ mb: 1 }}>
+              <Typography key={`${experience.company}-${experience.startDate}`} sx={{ mb: 1, overflowWrap: 'anywhere' }}>
                 {experience.position}
                 {' · '}
                 {experience.company}

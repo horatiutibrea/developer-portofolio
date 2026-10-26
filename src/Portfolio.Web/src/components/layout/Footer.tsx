@@ -15,7 +15,7 @@ export const Footer = () => {
   const navigate = useNavigate();
 
   return (
-    <Box component="footer" sx={{ px: { xs: 2.5, sm: 4, lg: 6 }, pb: 4, maxWidth: 1480, width: '100%', mx: 'auto' }}>
+    <Box component="footer" sx={{ px: { xs: 2.5, sm: 4, lg: 6 }, pb: 4, maxWidth: 1480, width: '100%', minWidth: 0, mx: 'auto', overflowX: 'clip' }}>
       <Divider />
       <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ py: 3, alignItems: { xs: 'flex-start', md: 'center' } }}>
         <Box sx={{ flex: 1 }}>

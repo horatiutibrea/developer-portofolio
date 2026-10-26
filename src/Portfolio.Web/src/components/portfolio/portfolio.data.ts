@@ -90,5 +90,46 @@ export const projects: Project[] = [
   },
 ];
 
-// The API contains the Experience entity, but no public endpoint is exposed yet.
-export const experiences: Experience[] = [];
+export const experiences: Experience[] = [
+  {
+    position: 'Software Engineer / Full-Stack Developer',
+    company: 'Bucharest University of Economic Studies (ASE)',
+    location: 'Bucharest, Romania',
+    startDate: 'Aug 2021',
+    isCurrent: true,
+    technologies: ['ASP.NET Core', 'EF Core', 'React', 'TypeScript', '.NET', 'SQL Server', 'Docker'],
+    description:
+      '• Design and support internal applications for admissions, resource planning, travel and approval workflows, ' +
+      'student services, teaching evaluation, accommodation, helpdesk operations, and institutional reporting.\n' +
+      '• Build ASP.NET Core REST APIs, EF Core data models, and React/TypeScript interfaces, including validation, ' +
+      'multi-step approvals, role-based access, audit trails, and secure document workflows.\n' +
+      '• Created a reusable .NET 10 and React 19 application foundation with a PowerShell project generator, ' +
+      'Google authentication, centralized logging, health checks, API versioning, and GitLab CI/CD deployment to IIS.\n' +
+      '• Delivered integrations and background processing with Google APIs, SendGrid, Hangfire, Firebase, and institutional systems, ' +
+      'plus automated Excel, Word, and PDF reporting with ClosedXML, OpenXML, PDFsharp, iText, and QuestPDF.\n' +
+      '• Deploy and troubleshoot services across IIS, Linux/Nginx, Docker, and Azure, and contribute production support, ' +
+      'observability, test automation, and security hardening.',
+  },
+  {
+    position: 'Associate Lecturer — Software Development & GIS',
+    company: 'Bucharest University of Economic Studies (ASE)',
+    location: 'Bucharest, Romania',
+    startDate: 'Oct 2021',
+    isCurrent: true,
+    technologies: ['C++', 'C#', 'ArcGIS Pro', 'Python'],
+    description:
+      '• Teach object-oriented programming in C++, Windows application development in C#, and geospatial modelling ' +
+      'with ArcGIS Pro and Python, translating production engineering practice into applied coursework.',
+  },
+  {
+    position: 'Full-Stack Development Trainer',
+    company: 'NewTech Academy',
+    location: 'Part-time · Bucharest / online',
+    startDate: 'Feb 2023',
+    isCurrent: true,
+    technologies: ['Node.js', 'SQL', 'MongoDB'],
+    description:
+      '• Deliver practical training in Node.js backend development, SQL, and MongoDB, ' +
+      'supporting learners through end-to-end full-stack projects.',
+  },
+];

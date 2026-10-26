@@ -30,7 +30,10 @@ export const AboutPage = () => {
           <SectionTitle eyebrow={t('about.eyebrow')} title={t('about.title')} description={t('about.intro')} />
         </Box>
         <Reveal>
-          <Box component="section" sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }, gap: 3, mb: { xs: 9, md: 13 } }}>
+          <Box
+            component="section"
+            sx={{ display: 'grid', gridTemplateColumns: { xs: 'minmax(0, 1fr)', md: 'repeat(2, minmax(0, 1fr))' }, gap: 3, mb: { xs: 9, md: 13 } }}
+          >
             <Card sx={liftCardSx}>
               <CardContent sx={{ p: { xs: 3, md: 4 } }}>
                 <Icon color="primary" sx={{ fontSize: 32, mb: 2 }}>
@@ -76,7 +79,13 @@ export const AboutPage = () => {
         <Reveal>
           <Box component="section">
             <SectionTitle eyebrow={t('about.interestsEyebrow')} title={t('about.interestsTitle')} />
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }, gap: 2 }}>
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: { xs: 'minmax(0, 1fr)', sm: 'repeat(2, minmax(0, 1fr))', lg: 'repeat(3, minmax(0, 1fr))' },
+                gap: 2,
+              }}
+            >
               {focusAreas.map((area) => (
                 <Card key={area.key} sx={liftCardSx}>
                   <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 2.5 }}>

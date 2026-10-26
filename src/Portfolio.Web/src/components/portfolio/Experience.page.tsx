@@ -36,7 +36,13 @@ export const ExperiencePage = () => {
               <Box
                 component="li"
                 key={`${experience.company}-${experience.startDate}`}
-                sx={{ display: 'grid', gridTemplateColumns: { xs: '28px 1fr', md: '130px 28px 1fr' }, gap: { xs: 2, md: 2.5 }, alignItems: 'start' }}
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: { xs: '28px minmax(0, 1fr)', md: '130px 28px minmax(0, 1fr)' },
+                  gap: { xs: 2, md: 2.5 },
+                  alignItems: 'start',
+                  minWidth: 0,
+                }}
               >
                 <Typography variant="body2" color="text.secondary" sx={{ display: { xs: 'none', md: 'block' }, pt: 2.5 }}>
                   {experience.startDate} — {experience.isCurrent ? t('experience.present') : experience.endDate}
@@ -61,13 +67,19 @@ export const ExperiencePage = () => {
                           {experience.company}
                         </Typography>
                       </Box>
-                      {experience.location && <Chip label={experience.location} size="small" />}
+                      {experience.location && (
+                        <Chip
+                          label={experience.location}
+                          size="small"
+                          sx={{ maxWidth: '100%', height: 'auto', '& .MuiChip-label': { whiteSpace: 'normal' } }}
+                        />
+                      )}
                     </Stack>
                     <Typography variant="body2" color="text.secondary" sx={{ display: { md: 'none' }, my: 1.5 }}>
                       {experience.startDate} — {experience.isCurrent ? t('experience.present') : experience.endDate}
                     </Typography>
                     {experience.description && (
-                      <Typography color="text.secondary" sx={{ mt: 2, lineHeight: 1.75 }}>
+                      <Typography color="text.secondary" sx={{ mt: 2, lineHeight: 1.75, whiteSpace: 'pre-line', overflowWrap: 'anywhere' }}>
                         {experience.description}
                       </Typography>
                     )}

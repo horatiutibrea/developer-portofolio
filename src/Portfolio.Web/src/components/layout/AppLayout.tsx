@@ -23,6 +23,8 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         <Box
           sx={{
             minHeight: '100vh',
+            minWidth: 0,
+            maxWidth: '100%',
             display: 'flex',
             flexDirection: 'column',
           }}
@@ -36,8 +38,10 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
               px: { xs: 2.5, sm: 4, lg: 6 },
               pb: { xs: 8, md: 12 },
               width: '100%',
+              minWidth: 0,
               maxWidth: 1480,
               mx: 'auto',
+              overflowX: 'clip',
             }}
           >
             {children}

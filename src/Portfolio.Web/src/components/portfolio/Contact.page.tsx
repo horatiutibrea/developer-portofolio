@@ -77,7 +77,7 @@ export const ContactPage = () => {
         <Box
           sx={{
             display: 'grid',
-            gridTemplateColumns: { xs: '1fr', lg: '.65fr 1.35fr' },
+            gridTemplateColumns: { xs: 'minmax(0, 1fr)', lg: 'minmax(0, .65fr) minmax(0, 1.35fr)' },
             gap: { xs: 4, lg: 7 },
             alignItems: 'start',
           }}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { loadPublishedExperiences, loadPublishedProjects, loadVisibleTechnologies } from '../admin/content.api';
-import { projects as staticProjects, technologies as staticTechnologies } from './portfolio.data';
+import { experiences as staticExperiences, projects as staticProjects, technologies as staticTechnologies } from './portfolio.data';
 import { Experience, Project } from './portfolio.models';
 
 const toExperience = (item: Awaited<ReturnType<typeof loadPublishedExperiences>>[number]): Experience => ({
@@ -26,7 +26,7 @@ const toProject = (item: Awaited<ReturnType<typeof loadPublishedProjects>>[numbe
 });
 
 export const usePublishedPortfolio = () => {
-  const [experiences, setExperiences] = useState<Experience[]>([]);
+  const [experiences, setExperiences] = useState<Experience[]>(staticExperiences);
   const [projects, setProjects] = useState<Project[]>(staticProjects);
   const [technologies, setTechnologies] = useState<string[]>(staticTechnologies);
   const [ready, setReady] = useState(false);
@@ -36,7 +36,9 @@ export const usePublishedPortfolio = () => {
     Promise.all([loadPublishedExperiences(), loadPublishedProjects(), loadVisibleTechnologies()])
       .then(([experienceItems, projectItems, technologyItems]) => {
         if (!active) return;
-        setExperiences(experienceItems.map(toExperience));
+        const publishedExperiences = experienceItems.map(toExperience);
+        const apiHasWrittenExperience = publishedExperiences.some((item) => (item.description ?? '').trim().length > 0);
+        setExperiences(apiHasWrittenExperience ? publishedExperiences : staticExperiences);
         const published = projectItems.map(toProject);
         const publishedSlugs = new Set(published.map((project) => project.slug));
         setProjects([...published, ...staticProjects.filter((project) => !publishedSlugs.has(project.slug))]);

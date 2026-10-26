@@ -78,8 +78,10 @@ export const TiltFrame = ({ children, sx }: { children: ReactNode; sx?: SxProps<
     if (ref.current) ref.current.style.transform = '';
   };
 
+  const coarsePointer = useMediaQuery('(pointer: coarse)');
+
   const onMove = (event: MouseEvent<HTMLDivElement>) => {
-    if (reducedMotion || !ref.current) return;
+    if (reducedMotion || coarsePointer || !ref.current) return;
     const rect = ref.current.getBoundingClientRect();
     const x = (event.clientX - rect.left) / rect.width - 0.5;
     const y = (event.clientY - rect.top) / rect.height - 0.5;

@@ -46,12 +46,22 @@ export const AppBar = () => {
   return (
     <Box
       component="header"
-      sx={{ position: 'fixed', zIndex: 1200, top: { xs: 10, md: compact ? 12 : 18 }, insetInline: { xs: 10, md: 24 }, transition: 'top 180ms ease' }}
+      sx={{
+        position: 'fixed',
+        zIndex: 1200,
+        top: { xs: 10, md: compact ? 12 : 18 },
+        left: { xs: 8, md: 24 },
+        width: { xs: 'calc(100% - 16px)', md: 'calc(100% - 48px)' },
+        maxWidth: 1380,
+        transition: 'top 180ms ease',
+      }}
     >
       <Toolbar
         disableGutters
         sx={{
           minHeight: { xs: 64, md: compact ? 64 : 72 },
+          width: '100%',
+          minWidth: 0,
           maxWidth: 1380,
           mx: 'auto',
           px: { xs: 1.25, sm: 2, md: 2.5 },
@@ -151,7 +161,7 @@ export const AppBar = () => {
         anchor="right"
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        slotProps={{ paper: { sx: { width: 'min(88vw, 360px)', p: 2.5, backgroundImage: 'none' } } }}
+        slotProps={{ paper: { sx: { width: 'min(88%, 360px)', p: 2.5, backgroundImage: 'none' } } }}
       >
         <Stack spacing={1}>
           <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>

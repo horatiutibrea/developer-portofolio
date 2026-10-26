@@ -50,7 +50,7 @@ export const ProjectsPage = () => {
         ) : (
           <Box
             component="section"
-            sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))', xl: 'repeat(3, minmax(0, 1fr))' }, gap: 3 }}
+            sx={{ display: 'grid', gridTemplateColumns: { xs: 'minmax(0, 1fr)', md: 'repeat(2, minmax(0, 1fr))', xl: 'repeat(3, minmax(0, 1fr))' }, gap: 3 }}
           >
             {visibleProjects.map((project) => (
               <ProjectCard key={project.slug} project={project} />
